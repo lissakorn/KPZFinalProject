@@ -65,5 +65,22 @@ namespace PersonalOrganizer.Controllers
             }
             return View(task); 
         }
+      
+        public async Task<IActionResult> Delete(int id)
+        {
+            var task = await _repository.GetTaskByIdAsync(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            return View(task);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _repository.DeleteTaskAsync(id);
+            return RedirectToAction("Index");
+        }
     }
 }
