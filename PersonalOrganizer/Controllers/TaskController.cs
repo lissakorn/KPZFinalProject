@@ -43,5 +43,27 @@ namespace PersonalOrganizer.Controllers
             }
             return View(task);
         }
+
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var task = await _repository.GetTaskByIdAsync(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            return View(task);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(TaskItem task)
+        {
+            if (ModelState.IsValid)
+            {
+                await _repository.UpdateTaskAsync(task); 
+                return RedirectToAction("Index"); 
+            }
+            return View(task); 
+        }
     }
 }
