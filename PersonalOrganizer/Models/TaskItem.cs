@@ -3,8 +3,29 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PersonalOrganizer.Models
 {
-    public enum TaskPriority { Low, Medium, High }
-    public enum TaskStatus { Todo, InProgress, Completed }
+    public enum TaskPriority
+    {
+        [Display(Name = "Низький")]
+        Low,
+
+        [Display(Name = "Середній")]
+        Medium,
+
+        [Display(Name = "Високий")]
+        High
+    }
+
+    public enum TaskStatus
+    {
+        [Display(Name = "До виконання")]
+        Todo,
+
+        [Display(Name = "В процесі")]
+        InProgress,
+
+        [Display(Name = "Виконано")]
+        Completed
+    }
 
     public class TaskItem
     {
