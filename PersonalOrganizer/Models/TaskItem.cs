@@ -43,6 +43,12 @@ namespace PersonalOrganizer.Models
         public TaskPriority Priority { get; set; }
         public TaskStatus Status { get; set; }
 
+        [Display(Name = "Категорія")]
+        public int? CategoryId { get; set; } 
+
+        [Display(Name = "Категорія")]
+        public virtual Category? Category { get; set; } 
+
         public string TimeColorClass
         {
             get

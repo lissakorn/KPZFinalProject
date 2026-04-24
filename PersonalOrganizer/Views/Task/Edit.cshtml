@@ -44,6 +44,13 @@
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
 
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Категорія</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                        <option value="">-- Без категорії --</option>
+                    </select>
+                </div>
+
                 <div class="mb-3 mt-4">
                     <button type="submit" class="btn btn-warning px-4">Оновити</button>
                     <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>

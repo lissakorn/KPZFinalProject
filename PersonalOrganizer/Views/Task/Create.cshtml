@@ -25,6 +25,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Категорія</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                        <option value="">-- Оберіть категорію (необов'язково) --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="DueDate" class="form-label">Дедлайн</label>
                     <input asp-for="DueDate" class="form-control" type="datetime-local" />
                     <span asp-validation-for="DueDate" class="text-danger"></span>
@@ -50,7 +58,6 @@
                     <button type="submit" class="btn btn-success px-4">Зберегти</button>
                     <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>
                 </div>
-
             </form>
         </div>
     </div>
