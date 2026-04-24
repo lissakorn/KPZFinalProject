@@ -1,0 +1,28 @@
+﻿@model IEnumerable<PersonalOrganizer.Models.Category>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Категорії</h2>
+        <a asp-action="Create" class="btn btn-primary">Додати категорію</a>
+    </div>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <span class="text-muted">Редагування скоро...</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

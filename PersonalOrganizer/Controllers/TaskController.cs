@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using PersonalOrganizer.Data;
 using PersonalOrganizer.Models;
 using PersonalOrganizer.Repositories;
 using System.Threading.Tasks;
@@ -9,38 +12,42 @@ namespace PersonalOrganizer.Controllers
     {
 
         private readonly ITaskRepository _repository;
+        private readonly OrganizerDbContext _context;
 
-        public TaskController(ITaskRepository repository)
+        public TaskController(ITaskRepository repository, OrganizerDbContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
 
-            var tasks = await _repository.GetAllTasksAsync();
+            var tasks = await _context.Tasks
+                               .Include(t => t.Category)
+                               .ToListAsync();
 
             return View(tasks);
         }
 
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await PopulateCategoriesViewBag(); 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskItem task)
         {
-           
             if (ModelState.IsValid)
             {
-        
-                await _repository.AddTaskAsync(task);
-
-              
-                return RedirectToAction("Index");
+                await _repository.AddTaskAsync(task); 
+                return RedirectToAction(nameof(Index));
             }
+
+            await PopulateCategoriesViewBag();
             return View(task);
         }
 
@@ -52,6 +59,8 @@ namespace PersonalOrganizer.Controllers
             {
                 return NotFound();
             }
+
+            await PopulateCategoriesViewBag(task.CategoryId); 
             return View(task);
 
         }
@@ -63,7 +72,8 @@ namespace PersonalOrganizer.Controllers
                 await _repository.UpdateTaskAsync(task); 
                 return RedirectToAction("Index"); 
             }
-            return View(task); 
+            await PopulateCategoriesViewBag(task.CategoryId);
+            return View(task);
         }
       
         public async Task<IActionResult> Delete(int id)
@@ -81,6 +91,12 @@ namespace PersonalOrganizer.Controllers
         {
             await _repository.DeleteTaskAsync(id);
             return RedirectToAction("Index");
+        }
+
+        private async Task PopulateCategoriesViewBag(int? selectedId = null)
+        {
+            var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", selectedId);
         }
     }
 }
