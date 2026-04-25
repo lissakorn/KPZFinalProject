@@ -38,6 +38,8 @@ namespace PersonalOrganizer.Models
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Вкажіть дату завершення")]
+
+        [FutureDate(ErrorMessage = "Дедлайн не може бути в минулому часі!")] 
         public DateTime DueDate { get; set; }
 
         public TaskPriority Priority { get; set; }
