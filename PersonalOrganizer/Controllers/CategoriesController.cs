@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PersonalOrganizer.Data;
 using PersonalOrganizer.Models;
+using PersonalOrganizer.Repositories;
 
 namespace PersonalOrganizer.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly OrganizerDbContext _context;
+     
+        private readonly ICategoryRepository _repository;
 
-        public CategoriesController(OrganizerDbContext context)
+        public CategoriesController(ICategoryRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _repository.GetAllCategoriesAsync());
         }
 
         public IActionResult Create() => View();
@@ -27,19 +27,17 @@ namespace PersonalOrganizer.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _repository.AddCategoryAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
-        
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _repository.GetCategoryByIdAsync(id.Value);
 
             if (category == null) return NotFound();
 
@@ -50,7 +48,7 @@ namespace PersonalOrganizer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool hasTasks = await _context.Tasks.AnyAsync(t => t.CategoryId == id);
+            bool hasTasks = await _repository.HasTasksAsync(id);
 
             if (hasTasks)
             {
@@ -58,15 +56,13 @@ namespace PersonalOrganizer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _repository.GetCategoryByIdAsync(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
+                await _repository.DeleteCategoryAsync(category);
             }
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

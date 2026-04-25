@@ -15,7 +15,7 @@ internal class Program
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         var app = builder.Build();
 
