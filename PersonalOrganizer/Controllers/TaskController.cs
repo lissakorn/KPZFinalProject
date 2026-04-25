@@ -34,8 +34,7 @@ namespace PersonalOrganizer.Controllers
                 tasksQuery = tasksQuery.Where(t => t.CategoryId == categoryId.Value);
             }
 
-            var categories = await _context.Categories.ToListAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name", categoryId);
+            await PopulateCategoriesViewBag(categoryId);
             ViewBag.CurrentSearch = searchString; 
 
             return View(await tasksQuery.ToListAsync());
