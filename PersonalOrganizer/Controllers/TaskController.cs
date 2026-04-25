@@ -20,16 +20,26 @@ namespace PersonalOrganizer.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
+            var tasksQuery = _context.Tasks.Include(t => t.Category).AsQueryable();
 
-            var tasks = await _context.Tasks
-                               .Include(t => t.Category)
-                               .ToListAsync();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                tasksQuery = tasksQuery.Where(t => t.Title.Contains(searchString));
+            }
 
-            return View(tasks);
+            if (categoryId.HasValue)
+            {
+                tasksQuery = tasksQuery.Where(t => t.CategoryId == categoryId.Value);
+            }
+
+            var categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", categoryId);
+            ViewBag.CurrentSearch = searchString; 
+
+            return View(await tasksQuery.ToListAsync());
         }
-
 
         public async Task<IActionResult> Create()
         {
