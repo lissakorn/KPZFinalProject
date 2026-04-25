@@ -1,0 +1,34 @@
+﻿@model PersonalOrganizer.Models.Category
+
+@{
+    ViewData["Title"] = "Видалення категорії";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Підтвердження видалення</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="lead">Ви впевнені, що хочете видалити цю категорію?</p>
+                    <h3 class="text-primary my-4">"@Model.Name"</h3>
+
+                    <div class="alert alert-info py-2">
+                        <small>Примітка: Категорію можна видалити лише якщо в ній немає активних завдань.</small>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Скасувати</a>
+                            <button type="submit" class="btn btn-danger px-4">Видалити назавжди</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

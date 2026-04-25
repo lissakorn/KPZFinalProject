@@ -1,4 +1,6 @@
-﻿@model IEnumerable<PersonalOrganizer.Models.TaskItem>
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@model IEnumerable<PersonalOrganizer.Models.TaskItem>
 
 @{
     ViewData["Title"] = "Мої завдання";
@@ -48,8 +50,24 @@
                 <td>@item.Title</td>
                 <td>@item.Description</td>
                 <td class="@item.TimeColorClass">@item.DueDate.ToShortDateString()</td>
-                <td>@item.Priority</td>
-                <td>@item.Status</td>
+                <td>
+                    @{
+                        var priorityDisplayName = item.Priority.GetType()
+                        .GetMember(item.Priority.ToString())
+                        .First()
+                        .GetCustomAttribute<DisplayAttribute>()?.Name ?? item.Priority.ToString();
+                    }
+                    @priorityDisplayName
+                </td>
+                <td>
+                    @{
+                        var statusDisplayName = item.Status.GetType()
+                        .GetMember(item.Status.ToString())
+                        .First()
+                        .GetCustomAttribute<DisplayAttribute>()?.Name ?? item.Status.ToString();
+                    }
+                    @statusDisplayName
+                </td>
                 <td>@(item.Category?.Name ?? "Без категорії")</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">Редагувати</a>
