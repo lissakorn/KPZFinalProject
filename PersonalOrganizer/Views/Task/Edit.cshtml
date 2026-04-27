@@ -1,65 +1,89 @@
 ﻿@model PersonalOrganizer.Models.TaskItem
 
 @{
-    ViewData["Title"] = "Редагування";
+    ViewData["Title"] = "Редагування завдання";
 }
 
-<div class="container mt-4">
-    <h2>Редагувати завдання</h2>
-    <hr />
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm" style="border-radius: var(--radius); overflow: hidden; border: none;">
 
-    <div class="row">
-        <div class="col-md-6">
-            <form asp-action="Edit" method="post">
-
-                <input type="hidden" asp-for="Id" />
-
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Назва завдання</label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="card-header text-white text-center py-3" style="background-color: var(--primary-pink); border-bottom: none;">
+                    <h4 class="mb-0 fw-bold">✨ Редагувати завдання</h4>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Опис</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit" method="post">
+                    
+                        <input type="hidden" asp-for="Id" />
 
-                <div class="mb-3">
-                    <label asp-for="DueDate" class="form-label">Дедлайн</label>
-                    <input asp-for="DueDate"
-                           type="date"
-                           class="form-control"
-                           min="@DateTime.Now.ToString("yyyy-MM-dd")" /> <span asp-validation-for="DueDate" class="text-danger"></span>
-                
-                    <span asp-validation-for="DueDate" class="text-danger"></span>
-                </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Title" class="form-label fw-bold" style="color: var(--text-color);">Назва завдання</label>
+                                    <input asp-for="Title" class="form-control shadow-none" placeholder="Що потрібно зробити?" />
+                                    <span asp-validation-for="Title" class="text-danger mt-1 d-block small"></span>
+                                </div>
 
-                <div class="mb-3">
-                    <label asp-for="Priority" class="form-label">Пріоритет</label>
-                    <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<PersonalOrganizer.Models.TaskPriority>()"></select>
-                    <span asp-validation-for="Priority" class="text-danger"></span>
-                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Description" class="form-label fw-bold" style="color: var(--text-color);">Опис</label>
+                                    <textarea asp-for="Description" class="form-control shadow-none" rows="4" placeholder="Додайте деталі тут..."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger mt-1 d-block small"></span>
+                                </div>
+                            </div>
 
-                <div class="mb-3">
-                    <label asp-for="Status" class="form-label">Статус</label>
-                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<PersonalOrganizer.Models.TaskStatus>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
-                </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="CategoryId" class="form-label fw-bold" style="color: var(--text-color);">Категорія</label>
+                                    <select asp-for="CategoryId" class="form-select shadow-none" asp-items="ViewBag.Categories">
+                                        <option value="">-- Без категорії --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger mt-1 d-block small"></span>
+                                </div>
 
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label">Категорія</label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
-                        <option value="">-- Без категорії --</option>
-                    </select>
-                </div>
+                                <div class="mb-3">
+                                    <label asp-for="DueDate" class="form-label fw-bold" style="color: var(--text-color);">Дедлайн</label>
+                                    <input asp-for="DueDate" type="date" class="form-control shadow-none" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="DueDate" class="text-danger mt-1 d-block small"></span>
+                                </div>
 
-                <div class="mb-3 mt-4">
-                    <button type="submit" class="btn btn-warning px-4">Оновити</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label asp-for="Priority" class="form-label fw-bold" style="color: var(--text-color);">Пріоритет</label>
+                                        <select asp-for="Priority" class="form-select shadow-none" asp-items="Html.GetEnumSelectList<PersonalOrganizer.Models.TaskPriority>()"></select>
+                                        <span asp-validation-for="Priority" class="text-danger mt-1 d-block small"></span>
+                                    </div>
+
+                                    <div class="col-6 mb-3">
+                                        <label asp-for="Status" class="form-label fw-bold" style="color: var(--text-color);">Статус</label>
+                                        <select asp-for="Status" class="form-select shadow-none" asp-items="Html.GetEnumSelectList<PersonalOrganizer.Models.TaskStatus>()"></select>
+                                        <span asp-validation-for="Status" class="text-danger mt-1 d-block small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--soft-pink);" />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                Скасувати
+                            </a>
+
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm">
+                                <i class="bi bi-arrow-repeat me-1"></i> Оновити завдання
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

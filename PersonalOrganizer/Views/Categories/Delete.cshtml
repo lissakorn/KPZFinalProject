@@ -4,27 +4,41 @@
     ViewData["Title"] = "Видалення категорії";
 }
 
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card border-danger shadow-sm">
-                <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">Підтвердження видалення</h4>
-                </div>
-                <div class="card-body text-center">
-                    <p class="lead">Ви впевнені, що хочете видалити цю категорію?</p>
-                    <h3 class="text-primary my-4">"@Model.Name"</h3>
+   
+            <div class="card shadow-sm" style="border-radius: var(--radius); border: 2px solid var(--soft-rose); overflow: hidden;">
 
-                    <div class="alert alert-info py-2">
-                        <small>Примітка: Категорію можна видалити лише якщо в ній немає активних завдань.</small>
+                <div class="card-header text-center py-3" style="background-color: var(--soft-rose); border-bottom: none;">
+                    <h4 class="mb-0 fw-bold" style="color: #a35d62;">🌸 Видалення</h4>
+                </div>
+
+                <div class="card-body text-center p-4">
+                    <p class="lead mb-2" style="color: var(--text-color);">Ви впевнені, що хочете видалити цю категорію?</p>
+
+                    <h2 class="my-4 fw-bold" style="color: var(--primary-pink);">"@Model.Name"</h2>
+
+                    <div class="p-2 mb-4 rounded-3" style="background-color: #fffafb; border: 1px dashed var(--soft-pink);">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Примітка: Категорію можна видалити лише якщо в ній немає активних завдань.
+                        </small>
                     </div>
 
                     <form asp-action="Delete">
                         <input type="hidden" asp-for="Id" />
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Скасувати</a>
-                            <button type="submit" class="btn btn-danger px-4">Видалити назавжди</button>
+                        <div class="d-flex justify-content-center gap-3 mt-2">
+                       
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                Скасувати
+                            </a>
+
+                            <button type="submit" class="btn rounded-pill px-4 text-white shadow-sm"
+                                    style="background-color: #e6738f; border: none;">
+                                Видалити назавжди
+                            </button>
                         </div>
                     </form>
                 </div>

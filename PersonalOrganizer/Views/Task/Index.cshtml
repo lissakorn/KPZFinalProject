@@ -1,16 +1,19 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using System.Reflection
+@using PersonalOrganizer.Models
 @model IEnumerable<PersonalOrganizer.Models.TaskItem>
 
 @{
     ViewData["Title"] = "Мої завдання";
 }
 
-<h2>Мої завдання</h2>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Створити нове завдання</a>
-</p>
-<form asp-action="Index" method="get" class="mb-4 mt-3 bg-light p-3 rounded shadow-sm">
+<h2 class="fw-bold" style="color: var(--primary-pink);">🌸 Мої завдання</h2>
+<div class="mb-4 text-center">
+    <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
+        <i class="bi bi-heart-fill me-2"></i> Створити нове завдання
+    </a>
+</div>
+<form asp-action="Index" method="get" class="mb-4 mt-3 filter-section p-3 rounded shadow-sm">
     <div class="row g-2 align-items-center">
 
         <div class="col-md-5">
@@ -50,29 +53,66 @@
                 <td>@item.Title</td>
                 <td>@item.Description</td>
                 <td class="@item.TimeColorClass">@item.DueDate.ToShortDateString()</td>
-                <td>
+                <td class="align-middle">
                     @{
-                        var priorityDisplayName = item.Priority.GetType()
+                        var priorityName = item.Priority.GetType()
                         .GetMember(item.Priority.ToString())
                         .First()
                         .GetCustomAttribute<DisplayAttribute>()?.Name ?? item.Priority.ToString();
+
+                        var priorityStyle = item.Priority switch
+                        {
+                            TaskPriority.High => "background-color: var(--soft-rose); color: #a35d62;",
+                            TaskPriority.Medium => "background-color: var(--peach-yellow); color: #8a7b1c;",
+                            TaskPriority.Low => "background-color: #a8e6cf; color: #1f4a2c;", 
+                            _ => "background-color: #e2e3e5; color: #383d41;"
+                        };
                     }
-                    @priorityDisplayName
+                    <span class="py-2 px-3 rounded-pill shadow-sm" style="@priorityStyle; font-weight: 600;">
+                        @priorityName
+                    </span>
                 </td>
-                <td>
+                <td class="align-middle">
                     @{
-                        var statusDisplayName = item.Status.GetType()
+                        var statusName = item.Status.GetType()
                         .GetMember(item.Status.ToString())
                         .First()
                         .GetCustomAttribute<DisplayAttribute>()?.Name ?? item.Status.ToString();
+
+                        var statusStyle = item.Status switch
+                        {
+                            PersonalOrganizer.Models.TaskStatus.Completed => "background-color: #a8e6cf; color: #1f4a2c;", 
+                            PersonalOrganizer.Models.TaskStatus.InProgress => "background-color: var(--soft-pink); color: white;",
+                            PersonalOrganizer.Models.TaskStatus.Todo => "background-color: #f1f3f5; color: #6c757d;", 
+                            _ => "background-color: #e2e3e5; color: #383d41;"
+                        };
                     }
-                    @statusDisplayName
+                    <span class="py-2 px-3 rounded-pill shadow-sm" style="@statusStyle; font-weight: 600;">
+                        @if (item.Status == PersonalOrganizer.Models.TaskStatus.Completed)
+                        {
+                            <i class="bi bi-check2-circle me-1"></i>
+                        }
+                        @statusName
+                    </span>
                 </td>
-                <td>@(item.Category?.Name ?? "Без категорії")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">Редагувати</a>
+                <td>@(item.Category?.Name ?? "Без категорії")</td>  
+
+                <td class="align-middle text-end">
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-primary rounded-pill px-2 shadow-sm">
+                            Редагувати
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-primary rounded-pill px-2 shadow-sm">
+                            Видалити
+                        </a>
+
+                    </div>
                 </td>
-                <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger ms-1">Видалити</a></td>
+                   
             </tr>
         }
     </tbody>

@@ -1,24 +1,53 @@
 ﻿@model PersonalOrganizer.Models.TaskItem
 
 @{
-    ViewData["Title"] = "Видалення";
+    ViewData["Title"] = "Видалення завдання";
 }
 
-<div class="container mt-4">
-    <h2 class="text-danger">Видалити завдання?</h2>
-    <hr />
-    <div class="card border-danger mb-3" style="max-width: 40rem;">
-        <div class="card-header bg-danger text-white">Увага! Цю дію неможливо скасувати.</div>
-        <div class="card-body">
-            <h5 class="card-title">@Model.Title</h5>
-            <p class="card-text">@Model.Description</p>
-            <p><strong>Дедлайн:</strong> @Model.DueDate.ToString("dd.MM.yyyy HH:mm")</p>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm text-center" style="border-radius: var(--radius); border: 2px solid var(--soft-rose); overflow: hidden;">
 
-            <form asp-action="Delete" method="post" class="mt-4">
-                <input type="hidden" asp-for="Id" />
-                <button type="submit" class="btn btn-danger px-4">Так, видалити</button>
-                <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>
-            </form>
+                <div class="card-header py-3" style="background-color: var(--soft-rose); border-bottom: none;">
+                    <h5 class="mb-0 fw-bold" style="color: #a35d62;">
+                        <i class="bi bi-exclamation-circle me-1"></i> Увага! Цю дію неможливо скасувати.
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-4" style="color: var(--primary-pink);">Видалити завдання?</h3>
+
+                    <div class="p-3 mb-4 rounded-3 text-start shadow-sm" style="background-color: #fffafb; border: 1px dashed var(--soft-pink);">
+                        <h5 class="fw-bold" style="color: var(--text-color);">@Model.Title</h5>
+
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <p class="text-muted mb-2">@Model.Description</p>
+                        }
+
+                        <p class="mb-0" style="color: var(--text-color);">
+                            <strong><i class="bi bi-calendar-event me-1"></i> Дедлайн:</strong> @Model.DueDate.ToString("dd.MM.yyyy HH:mm")
+                        </p>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-flex justify-content-center gap-3 mt-2">
+                        
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                Скасувати
+                            </a>
+
+                            <button type="submit" class="btn rounded-pill px-4 text-white shadow-sm"
+                                    style="background-color: #e6738f; border: none;">
+                                Так, видалити
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
