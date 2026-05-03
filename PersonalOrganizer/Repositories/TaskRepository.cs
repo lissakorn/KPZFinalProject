@@ -8,6 +8,22 @@ namespace PersonalOrganizer.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
+        public async Task<IEnumerable<TaskItem>> FilterTasksAsync(string? search, int? categoryId)
+        {
+            var query = _context.Tasks.Include(t => t.Category).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(t => t.Title.Contains(search));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(t => t.CategoryId == categoryId.Value);
+            }
+
+            return await query.ToListAsync();
+        }
         private readonly OrganizerDbContext _context;
 
         public TaskRepository(OrganizerDbContext context)
