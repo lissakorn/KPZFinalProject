@@ -11,5 +11,6 @@ namespace PersonalOrganizer.Repositories
         Task AddTaskAsync(TaskItem task);
         Task UpdateTaskAsync(TaskItem task);
         Task DeleteTaskAsync(int id);
+        Task<IEnumerable<TaskItem>> GetFilteredTasksAsync(string searchString, int? categoryId);
     }
 }

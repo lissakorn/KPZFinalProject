@@ -46,5 +46,21 @@ namespace PersonalOrganizer.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<TaskItem>> GetFilteredTasksAsync(string searchString, int? categoryId)
+        {
+            var query = _context.Tasks.Include(t => t.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(t => t.Title.Contains(searchString));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(t => t.CategoryId == categoryId.Value);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

@@ -12,32 +12,19 @@ namespace PersonalOrganizer.Controllers
     {
 
         private readonly ITaskRepository _repository;
-        private readonly OrganizerDbContext _context;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public TaskController(ITaskRepository repository, OrganizerDbContext context)
+        public TaskController(ITaskRepository repository, ICategoryRepository categoryRepository)
         {
             _repository = repository;
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
-            var tasksQuery = _context.Tasks.Include(t => t.Category).AsQueryable();
+            var tasksQuery = _repository.GetFilteredTasksAsync(searchString, categoryId);
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                tasksQuery = tasksQuery.Where(t => t.Title.Contains(searchString));
-            }
-
-            if (categoryId.HasValue)
-            {
-                tasksQuery = tasksQuery.Where(t => t.CategoryId == categoryId.Value);
-            }
-
-            await PopulateCategoriesViewBag(categoryId);
-            ViewBag.CurrentSearch = searchString; 
-
-            return View(await tasksQuery.ToListAsync());
+            return View(await tasksQuery);
         }
 
         public async Task<IActionResult> Create()
@@ -104,8 +91,8 @@ namespace PersonalOrganizer.Controllers
 
         private async Task PopulateCategoriesViewBag(int? selectedId = null)
         {
-            var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name", selectedId);
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories.OrderBy(c => c.Name), "Id", "Name", selectedId);
         }
     }
 }
