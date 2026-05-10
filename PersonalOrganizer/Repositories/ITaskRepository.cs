@@ -1,16 +1,9 @@
 ﻿using PersonalOrganizer.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PersonalOrganizer.Repositories
 {
-    public interface ITaskRepository
+    public interface ITaskRepository : IRepository<TaskItem>
     {
-        Task<IEnumerable<TaskItem>> GetAllTasksAsync();
-        Task<TaskItem?> GetTaskByIdAsync(int id);
-        Task AddTaskAsync(TaskItem task);
-        Task UpdateTaskAsync(TaskItem task);
-        Task DeleteTaskAsync(int id);
         Task<IEnumerable<TaskItem>> GetFilteredTasksAsync(string searchString, int? categoryId);
     }
 }
