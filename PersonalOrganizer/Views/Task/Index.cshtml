@@ -1,6 +1,7 @@
-﻿@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel.DataAnnotations
 @using System.Reflection
 @using PersonalOrganizer.Models
+@using PersonalOrganizer.Helpers
 @model IEnumerable<PersonalOrganizer.Models.TaskItem>
 
 @{
@@ -52,7 +53,7 @@
             <tr>
                 <td>@item.Title</td>
                 <td>@item.Description</td>
-                <td class="@item.TimeColorClass">@item.DueDate.ToShortDateString()</td>
+                <td class="@TaskDisplayHelper.GetTimeColorClass(item)">@item.DueDate.ToShortDateString()</td>
                 <td class="align-middle">
                     @{
                         var priorityName = item.Priority.GetType()

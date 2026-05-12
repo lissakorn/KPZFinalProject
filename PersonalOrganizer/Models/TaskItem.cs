@@ -1,4 +1,3 @@
-﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace PersonalOrganizer.Models
@@ -27,17 +26,5 @@ namespace PersonalOrganizer.Models
 
         [Display(Name = "Категорія")]
         public virtual Category? Category { get; set; } 
-
-        public string TimeColorClass
-        {
-            get
-            {
-                if (Status == TaskStatus.Completed) return "text-success";
-                var timeLeft = DueDate - DateTime.Now;
-                if (timeLeft.TotalDays < 0) return "text-danger fw-bold";
-                if (timeLeft.TotalDays <= 1) return "text-warning fw-bold";
-                return "text-body";
-            }
-        }
     }
-}
+}
