@@ -48,19 +48,30 @@ namespace PersonalOrganizer.Repositories
         }
         public async Task<IEnumerable<TaskItem>> GetFilteredTasksAsync(string searchString, int? categoryId)
         {
-            var query = _context.Tasks.Include(t => t.Category).AsQueryable();
+            var query = ApplySearchFilter(_context.Tasks.Include(t => t.Category), searchString);
+            query = ApplyCategoryFilter(query, categoryId);
 
+            return await query.ToListAsync();
+        }
+
+        private static IQueryable<TaskItem> ApplySearchFilter(IQueryable<TaskItem> query, string searchString)
+        {
             if (!string.IsNullOrEmpty(searchString))
             {
                 query = query.Where(t => t.Title.Contains(searchString));
             }
 
+            return query;
+        }
+
+        private static IQueryable<TaskItem> ApplyCategoryFilter(IQueryable<TaskItem> query, int? categoryId)
+        {
             if (categoryId.HasValue)
             {
                 query = query.Where(t => t.CategoryId == categoryId.Value);
             }
 
-            return await query.ToListAsync();
+            return query;
         }
     }
 }
