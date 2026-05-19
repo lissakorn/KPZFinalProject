@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using PersonalOrganizer.Data;
 using PersonalOrganizer.Models;
 using PersonalOrganizer.Repositories;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonalOrganizer.Controllers
 {
     public class TaskController : Controller
     {
-
         private readonly ITaskRepository _repository;
         private readonly ICategoryRepository _categoryRepository;
 
@@ -22,14 +21,12 @@ namespace PersonalOrganizer.Controllers
 
         public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
-            var tasksQuery = _repository.GetFilteredTasksAsync(searchString, categoryId);
-
-            return View(await tasksQuery);
+            return View(await _repository.GetFilteredTasksAsync(searchString, categoryId));
         }
 
         public async Task<IActionResult> Create()
         {
-            await PopulateCategoriesViewBag(); 
+            await PopulateCategoriesViewBag();
             return View();
         }
 
@@ -37,56 +34,60 @@ namespace PersonalOrganizer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskItem task)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _repository.AddTaskAsync(task); 
-                return RedirectToAction(nameof(Index));
+                await PopulateCategoriesViewBag();
+                return View(task);
             }
 
-            await PopulateCategoriesViewBag();
-            return View(task);
+            await _repository.AddTaskAsync(task);
+            return RedirectToAction(nameof(Index));
         }
 
-
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var task = await _repository.GetTaskByIdAsync(id);
-            if (task == null)
+            return await ProcessTaskAction(id, async task =>
             {
-                return NotFound();
-            }
-
-            await PopulateCategoriesViewBag(task.CategoryId); 
-            return View(task);
-
+                await PopulateCategoriesViewBag(task.CategoryId);
+                return View(task);
+            });
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(TaskItem task)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _repository.UpdateTaskAsync(task); 
-                return RedirectToAction("Index"); 
+                await PopulateCategoriesViewBag(task.CategoryId);
+                return View(task);
             }
-            await PopulateCategoriesViewBag(task.CategoryId);
-            return View(task);
+
+            await _repository.UpdateTaskAsync(task);
+            return RedirectToAction(nameof(Index));
         }
-      
-        public async Task<IActionResult> Delete(int id)
+
+        public async Task<IActionResult> Delete(int? id)
         {
-            var task = await _repository.GetTaskByIdAsync(id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-            return View(task);
+            return await ProcessTaskAction(id, task => Task.FromResult<IActionResult>(View(task)));
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _repository.DeleteTaskAsync(id);
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IActionResult> ProcessTaskAction(int? id, Func<TaskItem, Task<IActionResult>> action)
+        {
+            if (id == null) return NotFound();
+
+            var task = await _repository.GetTaskByIdAsync(id.Value);
+            if (task == null) return NotFound();
+
+            return await action(task);
         }
 
         private async Task PopulateCategoriesViewBag(int? selectedId = null)
